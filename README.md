@@ -1,3 +1,47 @@
+# Project
+
+`/.env/ JWT=nathan`
+GET http://localhost:3000/api/posts get all posts
+GET http://localhost:3000/api/posts/1 get select id post
+
+---
+
+POST http://localhost:3000/api/auth/register
+create a new User with the provided credentials and return a token
+req.body:
+`{
+	"username": "test1",
+	"password": "test1pass"
+}`
+
+POST http://localhost:3000/api/auth/login
+login with the provided credentials and return a token
+req.body:
+`{
+	"username": "test1",
+	"password": "test1pass"
+}`
+
+---
+
+POST http://localhost:3000/api/posts
+create a new post as the currently logged in user
+req.body:
+`{
+	     "userTitle" : "test 1 title",
+       "userContent": "test 1 content"
+}`
+
+PUT http://localhost:3000/api/posts/:id
+update a post only if it was created by the currently logged in user
+req.body:
+`{
+	     "userTitle" : "test 2 title",
+       "userContent": "test 2 content"
+}`
+DELETE http://localhost:3000/api/posts/:id
+delete a post only if it was created by the currently logged in user
+
 # Block 34D - Improved Juicebox
 
 For this project, you will be recreating the Juicebox API from scratch with the new technologies you've learned. You may structure your project as you wish as long as you meet the requirements. Feel free to use one of the previous workshop solutions as reference! Before you start, make sure to read through the rubric to get a sense of what you will be required to do.
