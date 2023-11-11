@@ -38,13 +38,13 @@ const SignIn = (props) => {
 const App = () => {
   // auth is an object defined by our User Prisma model in the backend (it's just a user)
   const [auth, setAuth] = useState({});
-  const [notes, setNotes] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   // This function is called by the sign in form when we sign in.
   // It takes a username and password.
   const signIn = async (credentials) => {
     // POST /api/auth means "sign me in"
-    let { data } = await axios.post("/api/auth", credentials);
+    let { data } = await axios.post("/api/auth/login", credentials);
     // It returns a "token" which is proof that we are successfully logged in.
     attemptTokenLogin(data.token);
   };
@@ -66,12 +66,12 @@ const App = () => {
       // const { data: notes } =
       // means "save the data property as variable named notes"
       // (because we already have a variable named data)
-      const { data: notes } = await axios.get(`/api/posts`, {
+      const { data: posts } = await axios.get(`/api/myposts`, {
         headers: {
           authorization: token,
         },
       });
-      setNotes(notes);
+      setPosts(posts);
     }
   };
 
@@ -86,8 +86,13 @@ const App = () => {
         <button onClick={() => setAuth({})}>Logout</button>
         <p>My Posts:</p>
         <ul>
-          {notes.map((note) => {
-            return <li key={note.id}>{note.text}</li>;
+          {posts.map((post) => {
+            return (
+              <li key={post.id}>
+                <li>{post.title}</li>
+                <li>{post.content}</li>{" "}
+              </li>
+            );
           })}
         </ul>
       </div>

@@ -1,7 +1,7 @@
 const prisma = require("../prisma");
 const router = require("express").Router();
 
-router.post("/", async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -21,7 +21,35 @@ router.post("/", async (req, res, next) => {
     next(err);
   }
 });
+router.post("/register", async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      const error = {
+        status: 400,
+        message: "must provide both username and password to login",
+      };
+      return next(error);
+    }
+    const user = await prisma.user.create({
+      data: {
+        username: req.body.username,
+        password: req.body.password,
+        posts: {
+          create: [],
+        },
+      },
+    });
 
+    if (user) {
+      return res.json({
+        token: user.id,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 //Get /api/auth
 router.get("/", async (req, res, next) => {
   try {
