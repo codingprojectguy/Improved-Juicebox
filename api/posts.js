@@ -113,4 +113,39 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
+//DELETE
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const userId = +req.headers.authorization;
+    if (!userId) {
+      return next({
+        status: 401,
+        message: "must login first",
+      });
+    }
+    const id = +req.params.id;
+    const postExists = await prisma.post.findUnique({ where: { id } });
+    if (!postExists) {
+      return next({
+        status: 404,
+        message: `Can not find post id${id}`,
+      });
+    }
+
+    if (postExists.userId !== userId) {
+      return next({
+        status: 403,
+        message: "you can't delete other user's post",
+      });
+    }
+
+    await prisma.post.delete({
+      where: { id },
+    });
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
