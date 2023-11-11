@@ -1,4 +1,5 @@
 const prisma = require("../prisma");
+const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
 router.post("/login", async (req, res, next) => {
@@ -12,7 +13,7 @@ router.post("/login", async (req, res, next) => {
 
     if (user) {
       return res.json({
-        token: user.id,
+        token: jwt.sign({ id: user.id }, process.env.JWT),
       });
     }
 
@@ -43,7 +44,7 @@ router.post("/register", async (req, res, next) => {
 
     if (user) {
       return res.json({
-        token: user.id,
+        token: jwt.sign({ id: user.id }, process.env.JWT),
       });
     }
   } catch (err) {
@@ -53,10 +54,10 @@ router.post("/register", async (req, res, next) => {
 //Get /api/auth
 router.get("/", async (req, res, next) => {
   try {
-    const id = +req.headers.authorization;
+    const payload = jwt.verify(req.headers.authorization, process.env.JWT);
     const user = await prisma.user.findUnique({
       where: {
-        id: id,
+        id: payload.id,
       },
     });
 

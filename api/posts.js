@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 const prisma = require("../prisma");
 
 //GET all the posts
@@ -35,9 +36,9 @@ router.get("/:id", async (req, res, next) => {
 //POST create a new post as the currently logged in user
 router.post("/", async (req, res, next) => {
   try {
-    const userId = +req.headers.authorization;
+    const payload = jwt.verify(req.headers.authorization, process.env.JWT);
 
-    if (!userId) {
+    if (!payload.id) {
       return next({
         status: 401,
         message: "Must login",
@@ -57,7 +58,7 @@ router.post("/", async (req, res, next) => {
         title: userTitle,
         content: userContent,
         user: {
-          connect: { id: userId },
+          connect: { id: payload.id },
         },
       },
     });
@@ -71,8 +72,8 @@ router.post("/", async (req, res, next) => {
 //PUT update a post only if it was created by currently logged in user.
 router.put("/:id", async (req, res, next) => {
   try {
-    const userId = +req.headers.authorization;
-    if (!userId) {
+    const payload = jwt.verify(req.headers.authorization, process.env.JWT);
+    if (!payload.id) {
       return next({
         status: 401,
         message: "must login first",
@@ -86,7 +87,7 @@ router.put("/:id", async (req, res, next) => {
         message: `Can not find post id${id}`,
       });
     }
-    if (postExists.userId !== userId) {
+    if (postExists.userId !== payload.id) {
       return next({
         status: 403,
         message: "you can't update other user's post",
@@ -116,8 +117,8 @@ router.put("/:id", async (req, res, next) => {
 //DELETE
 router.delete("/:id", async (req, res, next) => {
   try {
-    const userId = +req.headers.authorization;
-    if (!userId) {
+    const payload = jwt.verify(req.headers.authorization, process.env.JWT);
+    if (!payload.id) {
       return next({
         status: 401,
         message: "must login first",
@@ -132,7 +133,7 @@ router.delete("/:id", async (req, res, next) => {
       });
     }
 
-    if (postExists.userId !== userId) {
+    if (postExists.userId !== payload.id) {
       return next({
         status: 403,
         message: "you can't delete other user's post",

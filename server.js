@@ -1,3 +1,4 @@
+require("dotenv").config();
 const seed = require("./prisma/seed");
 const app = require("./app");
 
