@@ -1,13 +1,13 @@
 # Project
 
-`/.env/ JWT=nathan`
-GET http://localhost:3000/api/posts get all posts
-GET http://localhost:3000/api/posts/1 get select id post
+-`/.env/ JWT=nathan`
+GET http://localhost:3000/api/posts get all posts.
+GET http://localhost:3000/api/posts/1 get select id post.
 
 ---
 
 POST http://localhost:3000/api/auth/register
-create a new User with the provided credentials and return a token
+create a new User with the provided credentials and return a token.
 req.body:
 `{
 	"username": "test1",
@@ -15,7 +15,7 @@ req.body:
 }`
 
 POST http://localhost:3000/api/auth/login
-login with the provided credentials and return a token
+login with the provided credentials and return a token.
 req.body:
 `{
 	"username": "test1",
@@ -25,7 +25,7 @@ req.body:
 ---
 
 POST http://localhost:3000/api/posts
-create a new post as the currently logged in user
+create a new post as the currently logged in user.
 req.body:
 `{
 	     "userTitle" : "test 1 title",
@@ -33,14 +33,14 @@ req.body:
 }`
 
 PUT http://localhost:3000/api/posts/:id
-update a post only if it was created by the currently logged in user
+update a post only if it was created by the currently logged in user.
 req.body:
 `{
 	     "userTitle" : "test 2 title",
        "userContent": "test 2 content"
 }`
 DELETE http://localhost:3000/api/posts/:id
-delete a post only if it was created by the currently logged in user
+delete a post only if it was created by the currently logged in user.
 
 # Block 34D - Improved Juicebox
 
