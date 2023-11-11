@@ -32,4 +32,40 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+//POST create a new post as the currently logged in user
+router.post("/", async (req, res, next) => {
+  try {
+    const userId = +req.headers.authorization;
+
+    if (!userId) {
+      return next({
+        status: 401,
+        message: "Must login",
+      });
+    }
+
+    const { userTitle, userContent } = req.body;
+    if (!userTitle || !userContent) {
+      const error = {
+        status: 400,
+        message: "title and content must included",
+      };
+      return next(error);
+    }
+    const post = await prisma.post.create({
+      data: {
+        title: userTitle,
+        content: userContent,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    res.json(post);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
